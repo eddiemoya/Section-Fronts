@@ -14,6 +14,7 @@ class Controller_Templates {
 
 	private function add_actions(){
 		add_action($this->taxonomy . '_edit_form_fields', array($this, 'meta_link'));
+		add_action($this->taxonomy . '_edit_form_fields', array($this, 'template_selector'));
 		add_action ( 'edited_skcategory', array($this, 'edited_term'));
 		//add_action( 'template_redirect' , array($this, 'get_node_template'));
 	}
@@ -22,7 +23,7 @@ class Controller_Templates {
 
 		$label = "Metadata";
 		$node = new WP_Node($_GET['tag_ID'], $this->taxonomy, 'id');
-		print_pre($node);
+		//print_pre($node);
 		include ($this->paths->get('views') . 'meta-edit-link.php');
 	}
 
@@ -50,11 +51,14 @@ class Controller_Templates {
 			$term = get_queried_object();
 			$taxonomy = $term->taxonomy;
 
+			global $wp_query;
+			print_pre($wp_query);
+
 			$node = new WP_Node($term->term_id, $taxonomy );
 			print_pre($term);
 			$layout = WidgetPress_Controller_Widgets::display_dropzones($node->post->ID);
 			//if(!empty($layout)){
-				exit();
+				//exit();
 			//}
 		//}
 	}
