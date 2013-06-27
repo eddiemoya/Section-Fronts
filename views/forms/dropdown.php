@@ -1,18 +1,17 @@
 		<tr class="form-field">
-			<th scope="row" valign="top"><label for="<?php echo $name; ?>"><?php echo $label; ?></label></th>
+			<th scope="row" valign="top"><label for="<?php echo $label; ?>"><?php echo $label; ?></label></th>
 			<td>
-				<select name="<?php echo $name;?>" id="<?php echo $name;?>">
-					<option value='-1'>None</option>
+				<select name="<?php echo $name;?>" id="<?php echo $css_id;?>">
 					<option value='0'>Custom</option>
-					<option value='-1'>--------</option>
+					<option value='0'>--------</option>
 					<?php foreach($templates as $template) : ?>
 
-						<option value="<?php echo $template->ID; ?>">
+						<option value="<?php echo $template->ID; ?>" <?php echo ($template->ID == $layout_value) ? 'selected="selected"' : '';?>>
 							<?php echo $template->post_title; ?>
 						</option>
 					<?php endforeach; ?>
 				</select>
-				| <a href="blah">Edit</a>
+				| <?php edit_post_link('Edit Layout', '', '', $node->post->ID); ?>
 				<br />
 				<span class="description"><?php _e($description); ?></span>
 			</td>
