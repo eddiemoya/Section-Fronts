@@ -13,13 +13,20 @@ class Controller_Templates {
 	}
 
 	private function add_actions(){
-		add_action($this->taxonomy . '_edit_form_fields', array($this, 'meta_link'));
+		//add_action($this->taxonomy . '_edit_form_fields', array($this, 'meta_link'));
+		add_action('edited_term', array($this, 'save_section'));
 		add_action($this->taxonomy . '_edit_form_fields', array($this, 'template_selector'));
 		add_action ( 'edited_skcategory', array($this, 'edited_term'));
 		//add_action( 'template_redirect' , array($this, 'get_node_template'));
 	}
 
+	public function save_section(){
+		$node = new WP_Node($_POST['tag_ID'], $this->taxonomy, 'id');
+		$node->update_meta_data('section_front_layout', $_POST['layout']);
+	}
+
 	public function meta_link(){
+
 
 		$label = "Metadata";
 		$node = new WP_Node($_GET['tag_ID'], $this->taxonomy, 'id');
@@ -28,8 +35,16 @@ class Controller_Templates {
 	}
 
 	public function template_selector(){
-		$label = "Layout";
+
+		$node = new WP_Node($_GET['tag_ID'], $this->taxonomy, 'id');
+		$layout_value = $node->get_meta_data('section_front_layout');
+
 		$templates = $this->get_template_options();
+		
+		$name = "layout";
+		$css_id = "layout";
+		$label = "Layout";
+		
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 	}
 
