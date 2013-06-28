@@ -13,16 +13,35 @@ class Controller_Templates {
 	}
 
 	private function add_actions(){
+
+		
+		add_action( $this->taxonomy . '_edit_form_fields', array($this, 'category_template_selector'));
+
+
 		//add_action($this->taxonomy . '_edit_form_fields', array($this, 'meta_link'));
-		add_action('edited_term', array($this, 'save_section'));
-		add_action($this->taxonomy . '_edit_form_fields', array($this, 'template_selector'));
-		add_action ( 'edited_skcategory', array($this, 'edited_term'));
-		//add_action( 'template_redirect' , array($this, 'get_node_template'));
+		add_action( 'edited_term', array($this, 'save_section'));
+		add_action( 'edited_skcategory', array($this, 'edited_term'));
+
+		add_action('template_redirect', 		array($this, 'dont_redirect_canonical'), 0);
+
 	}
 
+	public function dont_redirect_canonical($arg){
+		remove_filter('template_redirect', 'redirect_canonical');
+	}
+
+
+
 	public function save_section(){
+
 		$node = new WP_Node($_POST['tag_ID'], $this->taxonomy, 'id');
-		$node->update_meta_data('section_front_layout', $_POST['layout']);
+
+		$node->update_meta_data('sf_category_template', $_POST['category-template']);
+		$node->update_meta_data('sf_posts_template', $_POST['posts-template']);
+		$node->update_meta_data('sf_questions_template', $_POST['questions-template']);
+		$node->update_meta_data('sf_guides_template', $_POST['guides-template']);
+		$node->update_meta_data('sf_videos_template', $_POST['videos-template']);
+
 	}
 
 	public function meta_link(){
@@ -34,22 +53,76 @@ class Controller_Templates {
 		include ($this->paths->get('views') . 'meta-edit-link.php');
 	}
 
-	public function template_selector(){
+
+
+
+	public function category_template_selector(){
 
 		$node = new WP_Node($_GET['tag_ID'], $this->taxonomy, 'id');
-		$layout_value = $node->get_meta_data('section_front_layout');
+		$layout_value = $node->get_meta_data('sf_category_template');
 
 		$templates = $this->get_template_options();
 		
-		$name = "layout";
-		$css_id = "layout";
-		$label = "Layout";
+		$name = "category-template";
+		$css_id = "category-template";
+		$label = ucfirst($this->taxonomy) ." Template";
+		$default = array("Default", "0");
+		
+		include ($this->paths->get('views') . 'forms/dropdown.php');
+
+		$layout_value = $node->get_meta_data('sf_posts_template');
+
+		$templates = $this->get_template_options();
+		
+		$name = "posts-template";
+		$css_id = "posts-template";
+		$label = "Posts Template";
+		$default = array("Inherit from category", "0");
+		
+		include ($this->paths->get('views') . 'forms/dropdown.php');
+
+		$layout_value = $node->get_meta_data('sf_guides_template');
+
+		$templates = $this->get_template_options();
+		
+		$name = "guides-template";
+		$css_id = "guides-template";
+		$label = "Guides Template";
+		$default = array("Inherit from category", "0");
+		
+		include ($this->paths->get('views') . 'forms/dropdown.php');
+
+		$layout_value = $node->get_meta_data('sf_questions_template');
+
+		$templates = $this->get_template_options();
+		
+		$name = "questions-template";
+		$css_id = "questions-template";
+		$label = "Questions Template";
+		$default = array("Inherit from category", "0");
+		
+		include ($this->paths->get('views') . 'forms/dropdown.php');
+	
+		$layout_value = $node->get_meta_data('sf_videos_template');
+
+		$templates = $this->get_template_options();
+		
+		$name = "videos-template";
+		$css_id = "videos-template";
+		$label = "Videos Template";
+		$default = array("Inherit from category", "0");
 		
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 	}
 
+
+
+
+
 	private function get_template_options(){
-		$this->paths->load('models', 'Model_Template');
+		if(!class_exists("Model_Template")){
+			$this->paths->load('models', 'Model_Template');
+		}
 		$sections = new WP_Query(array('post_type' => $this->taxonomy));
 		return $sections->posts;
 
