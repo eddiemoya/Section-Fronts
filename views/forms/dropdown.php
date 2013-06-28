@@ -2,7 +2,7 @@
 			<th scope="row" valign="top"><label for="<?php echo $label; ?>"><?php echo $label; ?></label></th>
 			<td>
 				<select name="<?php echo $name;?>" id="<?php echo $css_id;?>">
-					<option value='0'>Custom</option>
+					<option value='0'><?php echo $default[0]; ?></option>
 					<option value='0'>--------</option>
 					<?php foreach($templates as $template) : ?>
 
