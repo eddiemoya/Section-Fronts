@@ -20,10 +20,17 @@ class Controller_Templates {
 
 		//add_action($this->taxonomy . '_edit_form_fields', array($this, 'meta_link'));
 		add_action( 'edited_term', array($this, 'save_section'));
-		add_action( 'edited_skcategory', array($this, 'edited_term'));
-
+		add_action( "edited__$this->taxonomy", array($this, 'add_node_meta'));
+		add_filter('query_vars', 				array(__CLASS__, 'add_query_vars'));
 		add_action('template_redirect', 		array($this, 'dont_redirect_canonical'), 0);
 
+	}
+
+
+	public function add_query_vars($qvars) {
+		//$qvars[] = 'meta_key';
+		$qvars[] = 'sf_filter';
+		return $qvars;
 	}
 
 	public function dont_redirect_canonical($arg){
@@ -37,10 +44,14 @@ class Controller_Templates {
 		$node = new WP_Node($_POST['tag_ID'], $this->taxonomy, 'id');
 
 		$node->update_meta_data('sf_category_template', $_POST['category-template']);
-		$node->update_meta_data('sf_posts_template', $_POST['posts-template']);
-		$node->update_meta_data('sf_questions_template', $_POST['questions-template']);
-		$node->update_meta_data('sf_guides_template', $_POST['guides-template']);
-		$node->update_meta_data('sf_videos_template', $_POST['videos-template']);
+		$node->update_meta_data('sf_post_template', $_POST['post-template']);
+		$node->update_meta_data('sf_question_template', $_POST['question-template']);
+		$node->update_meta_data('sf_guide_template', $_POST['guide-template']);
+		$node->update_meta_data('sf_video_template', $_POST['video-template']);
+
+		global $wp_rewrite;
+	   	$wp_rewrite->flush_rules();
+
 
 	}
 
@@ -66,51 +77,54 @@ class Controller_Templates {
 		$name = "category-template";
 		$css_id = "category-template";
 		$label = ucfirst($this->taxonomy) ." Template";
+		$default = array("Default", $layout_value);
+		
+		include ($this->paths->get('views') . 'forms/dropdown.php');
+
+		$layout_value = $node->get_meta_data('sf_post_template');
+
+		$templates = $this->get_template_options();
+		
+		$name = "post-template";
+		$css_id = "post-template";
+		$label = "Posts Template";
 		$default = array("Default", "0");
 		
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 
-		$layout_value = $node->get_meta_data('sf_posts_template');
+		$layout_value = $node->get_meta_data('sf_guide_template');
+
 
 		$templates = $this->get_template_options();
 		
-		$name = "posts-template";
-		$css_id = "posts-template";
-		$label = "Posts Template";
-		$default = array("Inherit from category", "0");
+		$name = "guide-template";
+		$css_id = "guide-template";
+		$label = "Guide Template";
+		$default = array("Default", $layout_value);
 		
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 
-		$layout_value = $node->get_meta_data('sf_guides_template');
+		$layout_value = $node->get_meta_data('sf_question_template');
+
 
 		$templates = $this->get_template_options();
 		
-		$name = "guides-template";
-		$css_id = "guides-template";
-		$label = "Guides Template";
-		$default = array("Inherit from category", "0");
-		
-		include ($this->paths->get('views') . 'forms/dropdown.php');
-
-		$layout_value = $node->get_meta_data('sf_questions_template');
-
-		$templates = $this->get_template_options();
-		
-		$name = "questions-template";
-		$css_id = "questions-template";
+		$name = "question-template";
+		$css_id = "question-template";
 		$label = "Questions Template";
-		$default = array("Inherit from category", "0");
+		$default = array("Default", $layout_value);
 		
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 	
-		$layout_value = $node->get_meta_data('sf_videos_template');
+		$layout_value = $node->get_meta_data('sf_video_template');
+	
 
 		$templates = $this->get_template_options();
 		
-		$name = "videos-template";
-		$css_id = "videos-template";
+		$name = "video-template";
+		$css_id = "video-template";
 		$label = "Videos Template";
-		$default = array("Inherit from category", "0");
+		$default = array("Default", $layout_value);
 		
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 	}
@@ -128,9 +142,12 @@ class Controller_Templates {
 
 	}
 
-	public function edited_term($term_id){
+	public function add_node_meta($term_id){
 		$node = new WP_Node($term_id, $this->taxonomy);
 		$node->add_meta_data($this->taxonomy . '_template', $POST['template']);
+
+		global $wp_rewrite;
+	   	$wp_rewrite->flush_rules();
 	}
 
  
@@ -140,7 +157,7 @@ class Controller_Templates {
 			$taxonomy = $term->taxonomy;
 
 			global $wp_query;
-			print_pre($wp_query);
+			//print_pre($wp_query);
 
 			$node = new WP_Node($term->term_id, $taxonomy );
 			print_pre($term);
