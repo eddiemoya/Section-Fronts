@@ -21,8 +21,8 @@ class Controller_Templates {
 		//add_action($this->taxonomy . '_edit_form_fields', array($this, 'meta_link'));
 		add_action( 'edited_term', array($this, 'save_section'));
 		add_action( "edited__$this->taxonomy", array($this, 'add_node_meta'));
-		add_filter('query_vars', 				array(__CLASS__, 'add_query_vars'));
-		add_action('template_redirect', 		array($this, 'dont_redirect_canonical'), 0);
+		add_filter(	'query_vars', 				array(__CLASS__, 'add_query_vars'));
+		add_action(	'template_redirect', 		array($this, 'dont_redirect_canonical'), 0);
 
 	}
 
@@ -69,8 +69,11 @@ class Controller_Templates {
 
 	public function category_template_selector(){
 
+
 		$node = new WP_Node($_GET['tag_ID'], $this->taxonomy, 'id');
+
 		$layout_value = $node->get_meta_data('sf_category_template');
+		$layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
 
 		$templates = $this->get_template_options();
 		
@@ -82,6 +85,7 @@ class Controller_Templates {
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 
 		$layout_value = $node->get_meta_data('sf_post_template');
+		$layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
 
 		$templates = $this->get_template_options();
 		
@@ -93,7 +97,7 @@ class Controller_Templates {
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 
 		$layout_value = $node->get_meta_data('sf_guide_template');
-
+		$layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
 
 		$templates = $this->get_template_options();
 		
@@ -105,7 +109,7 @@ class Controller_Templates {
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 
 		$layout_value = $node->get_meta_data('sf_question_template');
-
+		$layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
 
 		$templates = $this->get_template_options();
 		
@@ -117,7 +121,7 @@ class Controller_Templates {
 		include ($this->paths->get('views') . 'forms/dropdown.php');
 	
 		$layout_value = $node->get_meta_data('sf_video_template');
-	
+		$layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
 
 		$templates = $this->get_template_options();
 		
@@ -160,7 +164,6 @@ class Controller_Templates {
 			//print_pre($wp_query);
 
 			$node = new WP_Node($term->term_id, $taxonomy );
-			print_pre($term);
 			$layout = WidgetPress_Controller_Widgets::display_dropzones($node->post->ID);
 			//if(!empty($layout)){
 				//exit();
