@@ -120,7 +120,7 @@ class Controller_Templates {
 
 			$this->get_dropdown($node, 'post_template', 'Posts Template', 'dropdown');
 			$this->get_dropdown($node, 'guide_template', 'Guides Tempalte', 'dropdown');
-			$this->get_dropdown($node, 'question_tempalte', 'Questions Template', 'dropdown');
+			$this->get_dropdown($node, 'question_template', 'Questions Template', 'dropdown');
 			$this->get_dropdown($node, 'video_template', 'Videos Template', 'dropdown');
 		}
 
