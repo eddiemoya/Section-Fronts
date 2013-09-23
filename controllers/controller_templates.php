@@ -41,7 +41,7 @@ class Controller_Templates {
 
 	public function save_section(){
 
-		$node = new WP_Node($_POST['tag_ID'], $this->taxonomy, 'id');
+		$node = new WP_Node($_POST['tag_ID'], $_POST['taxonomy'], 'id');
 
 		$node->update_meta_data('sf_category_template', $_POST['category_template']);
 		$node->update_meta_data('sf_post_template', $_POST['post_template']);
