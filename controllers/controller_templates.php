@@ -123,73 +123,6 @@ class Controller_Templates {
 			$this->get_dropdown($node, 'question_template', 'Questions Template', 'dropdown');
 			$this->get_dropdown($node, 'video_template', 'Videos Template', 'dropdown');
 		}
-
-
-
-
-
-
-
-
-		// $layout_value = $node->get_meta_data('sf_category_template');
-		// $layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
-
-		// $templates = $this->get_template_options();
-		
-		// $name = "category-template";
-		// $css_id = "category-template";
-		// $label = ucfirst($this->taxonomy) ." Template";
-		// $default = array("Default", $layout_value);
-		
-		// include ($this->paths->get('views') . 'forms/dropdown.php');
-
-		// $layout_value = $node->get_meta_data('sf_post_template');
-		// $layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
-
-		// $templates = $this->get_template_options();
-		
-		// $name = "post-template";
-		// $css_id = "post-template";
-		// $label = "Posts Template";
-		// $default = array("Default", "0");
-		
-		// include ($this->paths->get('views') . 'forms/dropdown.php');
-
-		// $layout_value = $node->get_meta_data('sf_guide_template');
-		// $layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
-
-		// $templates = $this->get_template_options();
-		
-		// $name = "guide-template";
-		// $css_id = "guide-template";
-		// $label = "Guide Template";
-		// $default = array("Default", $layout_value);
-		
-		// include ($this->paths->get('views') . 'forms/dropdown.php');
-
-		// $layout_value = $node->get_meta_data('sf_question_template');
-		// $layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
-
-		// $templates = $this->get_template_options();
-		
-		// $name = "question-template";
-		// $css_id = "question-template";
-		// $label = "Questions Template";
-		// $default = array("Default", $layout_value);
-		
-		// include ($this->paths->get('views') . 'forms/dropdown.php');
-	
-		// $layout_value = $node->get_meta_data('sf_video_template');
-		// $layout_value = (!empty($layout_value)) ? $layout_value : $node->post->ID;
-
-		// $templates = $this->get_template_options();
-		
-		// $name = "video-template";
-		// $css_id = "video-template";
-		// $label = "Videos Template";
-		// $default = array("Default", $layout_value);
-		
-		// include ($this->paths->get('views') . 'forms/dropdown.php');
 	}
 
 
@@ -230,29 +163,5 @@ class Controller_Templates {
 		//}
 	}
 }
-// function get_taxonomy_template() {
-// 	$term = get_queried_object();
-// 	$taxonomy = $term->taxonomy;
 
-// 	$templates = array();
-
-// 	$templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
-// 	$templates[] = "taxonomy-$taxonomy.php";
-// 	$templates[] = 'taxonomy.php';
-
-// 	return get_query_template( 'taxonomy', $templates );
-// }
-
-
-// function get_category_template() {
-// 	$category = get_queried_object();
-
-// 	$templates = array();
-
-// 	$templates[] = "category-{$category->slug}.php";
-// 	$templates[] = "category-{$category->term_id}.php";
-// 	$templates[] = 'category.php';
-
-// 	return get_query_template( 'category', $templates );
-// }
 
