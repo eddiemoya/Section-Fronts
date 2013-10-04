@@ -103,7 +103,7 @@ class Controller_Templates {
 	public function category_template_selector(){
 
 
-		$node = new WP_Node($_GET['tag_ID'], $this->taxonomy, 'id');
+		$node = new WP_Node($_GET['tag_ID'], $_POST['taxonomy'], 'id');
 
 
 		if($this->taxonomy == 'category') {
