@@ -12,6 +12,7 @@ include (plugin_dir_path(__FILE__) . 'config/paths.php');
 
 $paths = new Section_Front_Paths();
 //print_r($paths);
+
 $paths->load('controllers', 'controller_templates');
 $category = new Controller_Templates('category');
-$skcategory = new Controller_Templates('skcategory');
+// $skcategory = new Controller_Templates('skcategory');
