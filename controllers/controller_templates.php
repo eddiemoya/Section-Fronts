@@ -1,8 +1,5 @@
 <?php
 
-
-
-
 class Controller_Templates {
 	private $paths;
 	private $taxonomy;
@@ -28,7 +25,7 @@ class Controller_Templates {
 
 
 	public function setup_node(){
-		$this->node = new WP_Node_Controller($this->taxonomy);
+		$this->node = new WP_Node_Factory($this->taxonomy);
 		$this->node->create_node($_REQUEST['tag_ID']);
 	}
 
