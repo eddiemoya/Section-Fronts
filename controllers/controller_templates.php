@@ -1,13 +1,25 @@
 <?php
 
+
+/**
+ * This needs a lot of refactoring.
+ * All this class actually handles is the admin interface for a term editor.
+ * The model as it is now is pointless.
+ * The view is intermingled with this controller, as it the would-be model.
+ * The coupling makes it mostly untestable.
+ */
 class Controller_Templates {
 	private $paths;
 	private $taxonomy;
 	private $node;
 
 	public function __construct($taxonomy){
-		$this->paths = new Section_Front_Paths();
+
 		$this->taxonomy = $taxonomy;
+
+		$this->paths = new Section_Front_Paths();
+		
+		
 
 		$this->add_actions();
 	}
@@ -15,9 +27,9 @@ class Controller_Templates {
 	private function add_actions(){
 
 	
-		add_action('init',						array($this, 'setup_node'));
+		add_action( 'init',						array($this, 'setup_node'));
 		add_filter(	'query_vars', 				array(__CLASS__, 'add_query_vars'));
-		//add_action(	'template_redirect', 		array($this, 'dont_redirect_canonical'), 0);
+		add_action(	'template_redirect', 		array($this, 'dont_redirect_canonical'), 0);
 
 		add_action( $this->taxonomy . '_edit_form_fields', array($this, 'category_template_selector'));
 
@@ -26,7 +38,11 @@ class Controller_Templates {
 
 	public function setup_node(){
 		$this->node = new WP_Node_Factory($this->taxonomy);
-		$this->node->create_node($_REQUEST['tag_ID']);
+		
+		if(isset($_REQUEST['tag_ID']))
+		 {
+			$this->node->create_node($_REQUEST['tag_ID']);
+		 }
 	}
 
 
@@ -67,7 +83,6 @@ class Controller_Templates {
 
 	public function get_dropdown($node, $key, $label, $view, $description = ""){
 	
-
 		$layout_value = $node->get_node_meta("sf_{$key}");	
 		$layout_value = (!empty($layout_value)) ? $layout_value : $node->get_post()->ID;
 
@@ -80,6 +95,7 @@ class Controller_Templates {
 
 		$default = array("Default", $layout_value);
 		
+
 		include ($this->paths->get('views') . "forms/{$view}.php");
 	}
 
