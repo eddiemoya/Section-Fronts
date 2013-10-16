@@ -18,36 +18,33 @@ class Controller_Templates {
 		$this->taxonomy = $taxonomy;
 
 		$this->paths = new Section_Front_Paths();
-		
-		
-
 		$this->add_actions();
 	}
 
 	private function add_actions(){
 
 	
-		add_action( 'init',						array($this, 'setup_node'));
-		add_filter(	'query_vars', 				array(__CLASS__, 'add_query_vars'));
-		add_action(	'template_redirect', 		array($this, 'dont_redirect_canonical'), 0);
+		add_action( 'init',									array($this, 'setup_node'));
+		add_filter(	'query_vars', 							array(__CLASS__, 'add_query_vars'));
+		add_action(	'template_redirect', 					array($this, 'dont_redirect_canonical'), 0);
 
-		add_action( $this->taxonomy . '_edit_form_fields', array($this, 'category_template_selector'));
+		add_action( $this->taxonomy . '_edit_form_fields', 	array($this, 'category_template_selector'));
+		add_action( "edited_$this->taxonomy",			array($this, 'save_section'));
 
 	}
 
 
 	public function setup_node(){
 		$this->node = new WP_Node_Factory($this->taxonomy);
-		
+
 		if(isset($_REQUEST['tag_ID']))
-		 {
+		 {	
 			$this->node->create_node($_REQUEST['tag_ID']);
 		 }
 	}
 
 
 	public function add_query_vars($qvars) {
-		//$qvars[] = 'meta_key';
 		$qvars[] = 'sf_filter';
 		return $qvars;
 	}
@@ -59,31 +56,56 @@ class Controller_Templates {
 	}
 
 
-
+	/**
+	 * This all needs to be refactored. Its stupid.
+	 */
 	public function category_template_selector(){
 
 		if($this->taxonomy == 'category') {
 
-			$this->get_textarea($this->node, 'post_description', 'Posts Description', 'textarea', 'Description for %CAT%/posts');
-			$this->get_textarea($this->node, 'guide_description', 'Guides Description', 'textarea', 'Description for %CAT%/guides');
-			$this->get_textarea($this->node, 'question_description', 'Questions Description', 'textarea', 'Description for %CAT%/questions');
-			$this->get_textarea($this->node, 'video_description', 'Videos Description', 'textarea', 'Description for %CAT%/videos');
+			$this->get_textarea($this->node, 'sf_post_description', 'Posts Description', 'textarea', 'Description for %CAT%/posts');
+			$this->get_textarea($this->node, 'sf_guide_description', 'Guides Description', 'textarea', 'Description for %CAT%/guides');
+			$this->get_textarea($this->node, 'sf_question_description', 'Questions Description', 'textarea', 'Description for %CAT%/questions');
+			$this->get_textarea($this->node, 'sf_video_description', 'Videos Description', 'textarea', 'Description for %CAT%/videos');
 		}
 
-		$this->get_dropdown($this->node, $this->taxonomy, ucfirst($this->taxonomy), 'dropdown' );
+		$this->get_dropdown($this->node, "sf_{$this->taxonomy}_template", ucfirst($this->taxonomy), 'dropdown' );
 
 		if($this->taxonomy == 'category') {
 
-			$this->get_dropdown($this->node, 'post_template', 'Posts Template', 'dropdown');
-			$this->get_dropdown($this->node, 'guide_template', 'Guides Tempalte', 'dropdown');
-			$this->get_dropdown($this->node, 'question_template', 'Questions Template', 'dropdown');
-			$this->get_dropdown($this->node, 'video_template', 'Videos Template', 'dropdown');
+			$this->get_dropdown($this->node, 'sf_post_template', 'Posts Template', 'dropdown');
+			$this->get_dropdown($this->node, 'sf_guide_template', 'Guides Tempalte', 'dropdown');
+			$this->get_dropdown($this->node, 'sf_question_template', 'Questions Template', 'dropdown');
+			$this->get_dropdown($this->node, 'sf_video_template', 'Videos Template', 'dropdown');
 		}
 	}
 
+	public function save_section($term_id = null, $tt_id = null){
+
+				print_pre($this);
+	
+
+		$this->node->update_node_meta("sf_{$this->taxonomy}_template", 	$_POST["sf_{$this->taxonomy}_template"]);
+		$this->node->update_node_meta('sf_post_template', 		$_POST['sf_post_template']);
+		$this->node->update_node_meta('sf_question_template', 	$_POST['sf_question_template']);
+		$this->node->update_node_meta('sf_guide_template', 		$_POST['sf_guide_template']);
+		$this->node->update_node_meta('sf_video_template', 		$_POST['sf_video_template']);
+
+		$this->node->update_node_meta('sf_post_description', 	$_POST['sf_post_description']);
+		$this->node->update_node_meta('sf_question_description',$_POST['sf_question_description']);
+		$this->node->update_node_meta('sf_guide_description', 	$_POST['sf_guide_description']);
+		$this->node->update_node_meta('sf_video_description', 	$_POST['sf_video_description']);
+
+		// global $wp_rewrite;
+	 //   	$wp_rewrite->flush_rules();
+	}
+
+	/**
+	 * This all needs to be refactored. Its stupid.
+	 */
 	public function get_dropdown($node, $key, $label, $view, $description = ""){
 	
-		$layout_value = $node->get_node_meta("sf_{$key}");	
+		$layout_value = $node->get_node_meta($key);	
 		$layout_value = (!empty($layout_value)) ? $layout_value : $node->get_post()->ID;
 
 		$templates = $this->get_template_options();
@@ -99,7 +121,9 @@ class Controller_Templates {
 		include ($this->paths->get('views') . "forms/{$view}.php");
 	}
 
-
+	/**
+	 * This all needs to be refactored. Its stupid.
+	 */
 	public function get_textarea($node, $key, $label, $view, $description = ""){
 	
 		$value = $node->get_node_meta($key);
@@ -113,7 +137,9 @@ class Controller_Templates {
 		include ($this->paths->get('views') . "forms/{$view}.php");
 	}
 
-
+	/**
+	 * This all needs to be refactored. Its stupid.
+	 */
 	private function get_template_options(){
 		if(!class_exists("Model_Template")){
 			$this->paths->load('models', 'Model_Template');
@@ -182,10 +208,10 @@ class Controller_Templates {
 // 		$this->node->update_meta_data('sf_guide_template', $_POST['guide_template']);
 // 		$this->node->update_meta_data('sf_video_template', $_POST['video_template']);
 
-// 		$this->node->update_meta_data('post_description', $_POST['post_description']);
-// 		$this->node->update_meta_data('question_description', $_POST['question_description']);
-// 		$this->node->update_meta_data('guide_description', $_POST['guide_description']);
-// 		$this->node->update_meta_data('video_description', $_POST['video_description']);
+// 		$this->node->update_meta_data('sf_post_description', $_POST['post_description']);
+// 		$this->node->update_meta_data('sf_question_description', $_POST['question_description']);
+// 		$this->node->update_meta_data('sf_guide_description', $_POST['guide_description']);
+// 		$this->node->update_meta_data('sf_video_description', $_POST['video_description']);
 
 // 		global $wp_rewrite;
 // 	   	$wp_rewrite->flush_rules();
