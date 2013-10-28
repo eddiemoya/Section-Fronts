@@ -23,13 +23,14 @@ class Controller_Templates {
 
 	private function add_actions(){
 
-	
-		add_action( 'init',									array($this, 'setup_node'));
-		add_filter(	'query_vars', 							array(__CLASS__, 'add_query_vars'));
-		add_action(	'template_redirect', 					array($this, 'dont_redirect_canonical'), 0);
+		//if(class_exists('WP_Node_Factory')){
+			add_action( 'init',									array($this, 'setup_node'));
+			add_filter(	'query_vars', 							array(__CLASS__, 'add_query_vars'));
+			add_action(	'template_redirect', 					array($this, 'dont_redirect_canonical'), 0);
 
-		add_action( $this->taxonomy . '_edit_form_fields', 	array($this, 'category_template_selector'));
-		add_action( "edited_$this->taxonomy",			array($this, 'save_section'));
+			add_action( $this->taxonomy . '_edit_form_fields', 	array($this, 'category_template_selector'));
+			add_action( "edited_$this->taxonomy",			array($this, 'save_section'));
+		//}
 
 	}
 
