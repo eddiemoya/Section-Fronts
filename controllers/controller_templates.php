@@ -83,7 +83,7 @@ class Controller_Templates {
 
 	public function save_section($term_id = null, $tt_id = null){
 
-				print_pre($this);
+				//print_pre($this);
 	
 
 		$this->node->update_node_meta("sf_{$this->taxonomy}_template", 	$_POST["sf_{$this->taxonomy}_template"]);
